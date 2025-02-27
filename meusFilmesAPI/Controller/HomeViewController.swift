@@ -11,6 +11,9 @@ class HomeViewController: UIViewController {
     
     let contentView: HomeView
     
+    private let movieService = MovieService()
+    private var movies: [Movie] = []
+    
     init(contentView: HomeView) {
         self.contentView = contentView
         super.init(nibName: nil, bundle: nil)
@@ -31,6 +34,7 @@ class HomeViewController: UIViewController {
         contentView.popularFilmesCollectionView.dataSource = self
         contentView.popularFilmesCollectionView.register(PopularCollectionViewCell.self, forCellWithReuseIdentifier: PopularCollectionViewCell.identifier)
         
+        fetchMovies()
         setHierarchy()
         setConstraints()
     }
@@ -49,15 +53,30 @@ class HomeViewController: UIViewController {
             contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
+    
+    private func fetchMovies() {
+          movieService.fetchMovies { [weak self] result in
+              DispatchQueue.main.async {
+                  switch result {
+                  case .success(let movies):
+                      self?.movies = movies
+                      self?.contentView.popularFilmesCollectionView.reloadData()
+                  case .failure(let error):
+                      print("Erro ao buscar filmes: \(error.localizedDescription)")
+                  }
+              }
+          }
+      }
 }
 
 extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return movies.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PopularCollectionViewCell.identifier, for: indexPath) as? PopularCollectionViewCell else {return UICollectionViewCell()}
+        cell.configureCell(with: movies[indexPath.row])
         return cell
     }
     

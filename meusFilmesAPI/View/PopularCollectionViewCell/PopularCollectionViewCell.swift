@@ -14,7 +14,7 @@ class PopularCollectionViewCell: UICollectionViewCell {
         image.translatesAutoresizingMaskIntoConstraints = false
         image.layer.cornerRadius = 12
         image.clipsToBounds = true
-        image.backgroundColor = .red
+        image.contentMode = .scaleAspectFill
         return image
     }()
     
@@ -25,7 +25,6 @@ class PopularCollectionViewCell: UICollectionViewCell {
         label.textAlignment = .center
         label.textColor = .black
         label.numberOfLines = 0
-        label.text = "texto testando teste testando teste"
         return label
     }()
     
@@ -39,6 +38,37 @@ class PopularCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // Função para configurar a célula com os dados do filme
+    func configureCell(with movie: Movie){
+        // Define o título do filme no label
+        tituloFilmeLabel.text = movie.title
+        // Configura uma imagem temporária para evitar imagens erradas ao reciclar células
+        capaFilmeImageView.image = UIImage(systemName: "photo")
+        
+        // Verifica se há uma URL válida para o poster
+        if let url = movie.posterURL {
+            // Inicia uma tarefa para baixar a imagem de forma assíncrona
+            URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+                // Caso haja dados e seja possível criar uma UIImage
+                if let data = data, let image = UIImage(data: data) {
+                    // Atualiza a UI na thread principal
+                    DispatchQueue.main.async {
+                        self?.capaFilmeImageView.image = image
+                    }
+                    } else {
+                        // Se ocorrer erro ou não houver dados, pode definir uma imagem padrão ou limpar a imagem
+                        DispatchQueue.main.async {
+                            self?.capaFilmeImageView.image = UIImage(systemName: "photo")
+                        }
+                    }
+            }.resume() // Inicia a tarefa de rede
+        } else {
+            // Se a URL for inválida, define a imagem como nula ou uma imagem de placeholder
+            capaFilmeImageView.image = UIImage(systemName: "photo")
+        }
+        }
+    
     
     private func setupUI(){
         

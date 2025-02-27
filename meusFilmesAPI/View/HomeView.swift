@@ -36,7 +36,6 @@ class HomeView: UIView {
         let colection = UICollectionView(frame: .zero, collectionViewLayout: layout)
         colection.translatesAutoresizingMaskIntoConstraints = false
         colection.showsHorizontalScrollIndicator = false
-        colection.backgroundColor = .blue
         return colection
     }()
     
