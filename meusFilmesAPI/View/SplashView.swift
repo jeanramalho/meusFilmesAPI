@@ -9,6 +9,15 @@ import UIKit
 
 class SplashView: UIView {
     
+    lazy var nomeAppLabel: UILabel = {
+        let label =  UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .black
+        label.text = "Meus Filmes API"
+        label.font = UIFont.boldSystemFont(ofSize: 48)
+        return label
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -19,16 +28,20 @@ class SplashView: UIView {
     }
     
     private func setupUI(){
-        backgroundColor = .red
+        backgroundColor = .white
         setHierarchy()
         setConstraints()
     }
     
     private func setHierarchy(){
-        
+        addSubview(nomeAppLabel)
     }
     
     private func setConstraints(){
-        
+        NSLayoutConstraint.activate([
+            nomeAppLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            nomeAppLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            
+        ])
     }
 }

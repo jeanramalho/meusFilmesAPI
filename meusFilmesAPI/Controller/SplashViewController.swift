@@ -50,8 +50,8 @@ class SplashViewController: UIViewController {
         ])
     }
     
-    func startTimer(){
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {[weak self] in
+    private func startTimer(){
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
             self?.coordinator?.showHomeView()
         }
     }
