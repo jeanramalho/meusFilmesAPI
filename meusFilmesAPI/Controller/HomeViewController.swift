@@ -9,13 +9,16 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    private let coordinator: MeusFilmesAPIFlowController
+    
     let contentView: HomeView
     
     private let movieService = MovieService()
     private var movies: [Movie] = []
     
-    init(contentView: HomeView) {
+    init(contentView: HomeView, coordinator: MeusFilmesAPIFlowController) {
         self.contentView = contentView
+        self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -80,5 +83,9 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let filmeSelecionado = movies[indexPath.row]
+        coordinator.showDetalhesView(filme: filmeSelecionado)
+    }
     
 }

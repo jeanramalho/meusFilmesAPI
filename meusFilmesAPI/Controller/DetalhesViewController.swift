@@ -24,6 +24,7 @@ class DetalhesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setup()
     }
     
     private func setup(){
@@ -34,14 +35,42 @@ class DetalhesViewController: UIViewController {
     }
     
     private func setMovieDetail(){
+        contentView.tituloDetalhesFilme.text = filme.title
+        contentView.descricaoDetalhesFilme.text = filme.overview
+        contentView.capaDetalhesFilme.image = UIImage(systemName: "photo")
         
-    }
+        if let url = filme.posterURL {
+            URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self?.contentView.capaDetalhesFilme.image = image
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        self?.contentView.capaDetalhesFilme.image = UIImage(systemName: "photo")
+                    }
+                }
+            } .resume()
+                
+        } else {
+            contentView.capaDetalhesFilme.image = UIImage(systemName: "photo")
+        }
+        }
+        
+    
     
     private func setHierarchy(){
-        
+        view.addSubview(contentView)
     }
     
     private func setConstraints(){
+        contentView.translatesAutoresizingMaskIntoConstraints = false
         
+        NSLayoutConstraint.activate([
+            contentView.topAnchor.constraint(equalTo: view.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
     }
 }

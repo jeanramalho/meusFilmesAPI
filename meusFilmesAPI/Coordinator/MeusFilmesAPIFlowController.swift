@@ -27,8 +27,14 @@ class MeusFilmesAPIFlowController: MeusFilmesAPICoordinatorProtocol {
     func showHomeView(){
         
         let contentView = HomeView()
-        let homeView = HomeViewController(contentView: contentView)
+        let homeView = HomeViewController(contentView: contentView, coordinator: self)
         self.navigationController?.setViewControllers([homeView], animated: true)
+    }
+    
+    func showDetalhesView(filme: Movie){
+        let contentView = DetalhesView()
+        let detalhesView = DetalhesViewController(contentView: contentView, filme: filme)
+        self.navigationController?.pushViewController(detalhesView, animated: true)
     }
 }
 
